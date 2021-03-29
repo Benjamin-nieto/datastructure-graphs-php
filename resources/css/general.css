@@ -1,0 +1,87 @@
+    /* Small devices (landscape phones, 576px and up) */
+    /* Medium devices (tablets, 768px and up) */
+    
+    @media (max-width: 700px) {
+        body {
+            background-color: rgb(255, 250, 232);
+        }
+        .container-fluid {
+            display: block !important;
+        }
+        .row {
+            display: block !important;
+        }
+        .col-6 {
+            display: block !important;
+        }
+    }
+    
+    @media (min-width: 700px) {
+        body {
+            background-color: rgb(255, 250, 232);
+        }
+    }
+    /* Large devices (desktops, 992px and up) 
+
+@media (min-width: 992px) {
+    body {
+        background-color: rgb(255 250 232);
+    }
+} */
+    /* Extra large devices (large desktops, 1200px and up)*/
+    
+    @media (min-width: 1200px) {
+        body {
+            background-color: rgb(255, 250, 232);
+        }
+    }
+    
+    .button-add {
+        background-image: url(../img/plus-circle-fill.svg);
+        background-size: cover;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 0px solid;
+        outline: none;
+    }
+    
+    .button-delete {
+        background-image: url(../img/x-circle-fill.svg);
+        background-size: cover;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 0px solid;
+        outline: none;
+    }
+    
+    .button-adya {
+        background-image: url(../img/share.svg);
+        background-size: cover;
+        background-color: transparent;
+        width: 25px;
+        height: 25px;
+        border: 0px solid;
+        outline: none;
+    }
+    
+    .button-view {
+        background-image: url(../img/view.svg);
+        background-size: cover;
+        background-color: transparent;
+        width: 25px;
+        height: 25px;
+        border: 0px solid;
+        outline: none;
+    }
+    
+    .button-graph {
+        background-image: url(../img/diagram-3.svg);
+        background-size: cover;
+        background-color: transparent;
+        width: 25px;
+        height: 25px;
+        border: 0px solid;
+        outline: none;
+    }
