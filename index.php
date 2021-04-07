@@ -11,6 +11,46 @@ function phpAlert($msg)
     echo '<script type="text/javascript">alert("' . $msg . '")</script>';
 }
 
+function messageDialog($msg){
+
+    echo '<script type="text/javascript">
+    function print_save1(){
+        document.getElementById("danger-div").style.display = "block";
+        document.getElementById("danger-div").innerHTML = "'.$msg.'";
+
+    }
+    print_save1();
+    function desprint_save1(){
+        document.getElementById("danger-div").innerHTML = "";
+        document.getElementById("danger-div").style.display = "none";
+    }
+    setTimeout(desprint_save1, 2000);
+
+    </script>';
+
+}
+
+
+function deleteDialog($msg){
+
+    echo '<script type="text/javascript">
+    function print_save2(){
+        document.getElementById("danger-div").style.display = "block";
+        document.getElementById("danger-div").innerHTML = "'.$msg.'";
+
+    }
+    print_save2();
+    function desprint_save2(){
+        document.getElementById("danger-div").innerHTML = "";
+        document.getElementById("danger-div").style.display = "none";
+    }
+    setTimeout(desprint_save2, 2000);
+
+    </script>';
+
+}
+
+
 ?>
 
 <html lang="es">
@@ -36,6 +76,10 @@ function phpAlert($msg)
 
 <body>
     <div class="container-fluid">
+        <div class="alert alert-primary" id="danger-div" role="alert" style="display: none;">
+        </div>
+        <div class="alert alert-danger" id="danger-div" role="alert" style="display: none;">
+        </div>
 
         <div class="row">
             <div class="col-6">
@@ -150,6 +194,9 @@ function phpAlert($msg)
                     $txt_vertice = $_POST["id_vertice"];
                     if ($txt_vertice != null || $txt_vertice != "") {
                         $_SESSION["grafo"]->agregarVertice(new Vertice($txt_vertice));
+                        $create = "se creo vertice $txt_vertice";
+                        messageDialog($create);
+                        $create = null;
                     } else {
                         phpAlert("Valor de vertice no puede ser nulo");
                     }
@@ -161,7 +208,10 @@ function phpAlert($msg)
                     if ($txt_ari_o != "" && $txt_ari_d != "") {
                         $ret = $_SESSION["grafo"]->agregarArista($txt_ari_o, $txt_ari_d, $txt_ari_peso);
                         if ($ret) {
-                            echo '<p>Se agrego arista entre vertice ' . $txt_ari_o . ' y vertice ' . $txt_ari_d . '</p>';
+                            $create = 'Se agrego arista entre vertice ' . $txt_ari_o . ' y vertice ' . $txt_ari_d;
+                            messageDialog($create);
+                            $create = null;
+
                         }
                     } else {
                         phpAlert("Debe digitar vertice de origen y destino no pueden ser nulo");
@@ -173,7 +223,7 @@ function phpAlert($msg)
                         if ($d === null || $d === "") {
                             echo '<p>No se encontro vertice</p>';
                         } else {
-                            print_r($d);
+                            echo "Se encontro el vertice ".$d->getId();
                         }
                     } else {
                         phpAlert("El id del vertice a ver no puede ser nulo");
@@ -185,7 +235,10 @@ function phpAlert($msg)
                         if ($d === null || $d === "") {
                             echo '<p>No se encontro adyacencia</p>';
                         } else {
-                            print_r($d);
+                            echo "Vertices adyacentes de ".$txt_id_ady."<br>";
+                            foreach ($d as $arr => $value) {
+                               echo "Vertice ".$arr." <br>";
+                            }
                         }
                     } else {
                         phpAlert("El id del vertice adyacente a buscar no puede ser nulo");
@@ -206,6 +259,7 @@ function phpAlert($msg)
                     $txt_delver = $_POST["txt-delete-vert"];
                     if ($txt_delver != "") {
                         $_SESSION["grafo"]->eliminarVertice($txt_delver);
+                        deleteDialog("Se elimino el vertice ".$txt_delver);
                     } else {
                         phpAlert("Debe indicar el id de un vertice");
                     }
@@ -214,55 +268,69 @@ function phpAlert($msg)
                     $txt_del_d = $_POST["txt-delete-destino"];
                     if ($txt_del_o != "" && $txt_del_d != "") {
                         $_SESSION["grafo"]->eliminarArista($txt_del_o, $txt_del_d);
+                        deleteDialog("Se elimino la arista que va de ".$txt_del_o." a ".$txt_del_d);
+
                     } else {
                         phpAlert("Debe digitar vertice origen y destino");
                     }
                 } elseif (isset($_POST["ver-grafo"])) {
+                   ver_grafos();
+                }
+
+                function ver_grafos(){
                     $string_generate_aristas = null;
                     $mA = $_SESSION["grafo"]->getMatrizA();
                     foreach ($mA as $a => $adya) {
                         if ($adya != null) {
-                           foreach ($adya as $de => $val) {                   
-                            $string_generate_aristas = $string_generate_aristas.'{from:"'.$a.'",to:"'.$de.'",label:"'.$val.'"},'; 
-                           }
+                            foreach ($adya as $de => $val) {
+                                $string_generate_aristas = $string_generate_aristas . '{from:"' . $a . '",to:"' . $de . '",label:"' . $val . '"},';
+                            }
                         }
                     }
-                    
+                
                     echo "<br>";
                     $mV = $_SESSION["grafo"]->getVectorV();
                     $string_generate_nodes = null;
                     $numc = 0;
-                    $arr_color = ["red","yellow","green","blue","purple","orange","brown","grey","cyan","pink"];                    
+                    $arr_color = ["red", "yellow", "green", "blue", "purple", "orange", "brown", "grey", "cyan", "pink"];
                     foreach ($mV as $v => $valuev) {
                         $str = $valuev->getId();
-                        $numc=$numc+1;
-                        $add_color = $arr_color[rand(0,9)];
-                        if ($numc==count($mV)) {
-                            $string_generate_nodes = $string_generate_nodes."{id: '$str', label: '$str',color:{background:'$add_color'} }";
+                        $numc = $numc + 1;
+                        $add_color = $arr_color[rand(0, 9)];
+                        if ($numc == count($mV)) {
+                            $string_generate_nodes = $string_generate_nodes . "{id: '$str', label: '$str',color:{background:'$add_color'} }";
                         } else {
-                            $string_generate_nodes = $string_generate_nodes."{id: '$str', label: '$str',color:{background:'$add_color'} },";
+                            $string_generate_nodes = $string_generate_nodes . "{id: '$str', label: '$str',color:{background:'$add_color'} },";
                         }
                     }
-
-                    echo "<h5>Nodos: </h5>".$string_generate_nodes."<br>";
+                
+                    //echo "<h5>Nodos: </h5>".$string_generate_nodes."<br>";
                     $split_string_generate_arista = substr($string_generate_aristas, 0, -1);
-                    echo "<h5>Aristas: </h5>".$split_string_generate_arista."<br>";
+                    //echo "<h5>Aristas: </h5>".$split_string_generate_arista."<br>";
                     echo ' <div class="row">
                     <div class="col-12">
                     <div id="content-grafo" style="width:90%;height:400px;">    
                     </div></div></div>';
-                   generateGrafo($string_generate_nodes,$split_string_generate_arista);
-
+                    generateGrafo($string_generate_nodes, $split_string_generate_arista);
+                
                 }
+
+                
+    $yen = $_SESSION["grafo"]->getVectorV();
+    if ( count($yen) > 1) {
+            ver_grafos();
+    }
+
                 ?>
             </div>
         </div>
     </div>
-<?php 
-function generateGrafo($string_node_complete,$split_string_generate_arista){
-    echo '<script type="text/javascript">
-    var nodos = new vis.DataSet(['.$string_node_complete.']);
-    var aristas = new vis.DataSet(['.$split_string_generate_arista.']);
+    <?php
+    function generateGrafo($string_node_complete, $split_string_generate_arista)
+    {
+        echo '<script type="text/javascript">
+    var nodos = new vis.DataSet([' . $string_node_complete . ']);
+    var aristas = new vis.DataSet([' . $split_string_generate_arista . ']);
     
     var contenedores = document.getElementById("content-grafo");
     var datos = {
@@ -283,11 +351,10 @@ function generateGrafo($string_node_complete,$split_string_generate_arista){
     
     var grafo = new vis.Network(contenedores, datos, opciones);
     </script>';
-    
-    
-}
+    }
 
-?>
+    ?>
+
 </body>
 
 </html>
