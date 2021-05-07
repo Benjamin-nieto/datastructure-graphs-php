@@ -7,6 +7,7 @@ class Grafo
     private $matrizA; // aristar [].[].[]
     private $vectorV; // nodos A
     private $dirigido; // -> vertice
+    private $cola = null; // cola de adyacentes
 
     public function __construct($dir = true)
     {
@@ -34,6 +35,11 @@ class Grafo
     public function getVertice($v)
     {
         return $this->vectorV[$v];
+    }
+
+    public function getCola()
+    {
+        return $this->cola;
     }
     // agregar aristas a las matriz de aristas
     // - origen
@@ -141,4 +147,130 @@ class Grafo
         }
         return true;
     }
+
+    // COLA
+    public function recorrerAnchura($v)
+    {
+        $cola=array();
+        $visitados=array();
+        // nodo inicial = nodo A
+        if ($v != null) {
+
+            $cola[] = $v;
+            $visitados[$v]=1;
+
+           for ($i=0; $i < count($cola); $i++) { 
+            $nodo = $cola[$i];
+            //   echo "nodo:".$nodo;
+               // si el nodo esta en al matriz de adyacentes
+               if (isset($this->matrizA[$nodo])){
+                    foreach ($this->matrizA[$nodo] as $k => $v){
+                       // print_r($v);
+                        if(!isset($visitados[$k])){
+                            $cola[]=$k;
+                            $visitados[$k]=1;
+
+                        }
+                    }
+               }
+            }
+               return $cola;
+        }else{
+        return false;
+
+        }
+        
+    }
+
+
+
+    public function RecorrerProfundidad($v){
+
+        if(isset($this->vectorV[$v])){
+            $cola =array();
+            $visitados=array();
+
+            if(!isset($visitados[$v])){
+                $cola[]=$v;
+                $visitados[$v]=1;
+            }
+
+            if(isset($this->matrizA[$v])){
+                foreach($this->matrizA[$v] as $key => $value){
+
+                    if(!isset($visitados[$key])){
+                        $cola[]=$key;
+                        $visitados[$key]=1;
+                        $cola[]=$this->RecorrerProfundidad($key);
+                    }
+
+                }//End for*/
+            }
+            return $cola;
+
+        }else{
+            return false;
+        }
+    }
+
+    public function CaminoMasCorto($a,$b){
+
+        //Validmos si existe los vertice
+
+        if(isset($this->vectorV[$a]) AND isset($this->vectorV[$b])){
+
+            $S = array();
+            $Q = array();
+
+            foreach(array_keys($this->matrizA) as $val) $Q[$val] = 99999;
+
+            $Q[$a] = 0;
+
+            //inicio calculo
+            while(!empty($Q)){
+
+                $min = array_search(min($Q), $Q);
+
+                if($min == $b) break;
+
+                foreach($this->matrizA[$min] as $key=>$val) if(!empty($Q[$key]) && $Q[$min] + $val < $Q[$key]) {
+
+                    $Q[$key] = $Q[$min] + $val;
+
+                    $S[$key] = array($min, $Q[$key]);
+
+                }
+
+                unset($Q[$min]);
+
+            }//End WHile
+
+            $path = array();
+
+            $pos = $b;
+
+            while($pos != $a){
+
+                $path[] = $pos;
+
+                $pos = $S[$pos][0];
+
+            }
+
+            $path[] = $a;
+
+            $path = array_reverse($path);
+
+            return $path;
+
+        }else{
+            return false;
+        }
+
+    }
+
+
+
+
+
 }

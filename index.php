@@ -11,12 +11,13 @@ function phpAlert($msg)
     echo '<script type="text/javascript">alert("' . $msg . '")</script>';
 }
 
-function messageDialog($msg){
+function messageDialog($msg)
+{
 
     echo '<script type="text/javascript">
     function print_save1(){
         document.getElementById("danger-div").style.display = "block";
-        document.getElementById("danger-div").innerHTML = "'.$msg.'";
+        document.getElementById("danger-div").innerHTML = "' . $msg . '";
 
     }
     print_save1();
@@ -27,16 +28,16 @@ function messageDialog($msg){
     setTimeout(desprint_save1, 2000);
 
     </script>';
-
 }
 
 
-function deleteDialog($msg){
+function deleteDialog($msg)
+{
 
     echo '<script type="text/javascript">
     function print_save2(){
         document.getElementById("danger-div").style.display = "block";
-        document.getElementById("danger-div").innerHTML = "'.$msg.'";
+        document.getElementById("danger-div").innerHTML = "' . $msg . '";
 
     }
     print_save2();
@@ -47,7 +48,6 @@ function deleteDialog($msg){
     setTimeout(desprint_save2, 2000);
 
     </script>';
-
 }
 
 
@@ -86,6 +86,7 @@ function deleteDialog($msg){
                 <div class="row">
                     <div class="col-12">
                         <h1>Proyecto grafos</h1>
+                        <h5>Integrantes: Benjamin E. Nieto Garcia, Juan R. Jimenez Y.</h5>
                         <div class="row">
                             <div class="col-12">
                                 <form method="post">
@@ -184,6 +185,22 @@ function deleteDialog($msg){
                                 </form>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <form action="" method="post">
+                                    <input type="text" name="txt-runway-inch" id="txt-runway-inch" style="width: 10%;">
+                                    <input type="submit" name="recorrido-inch" value="recorrido de anchura">
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <form action="" method="post">
+                                    <input type="text" name="txt-runway-prof" id="txt-runway-prof" style="width: 10%;">
+                                    <input type="submit" name="recorrido-prof" value="recorrido de profundidad">
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -211,7 +228,6 @@ function deleteDialog($msg){
                             $create = 'Se agrego arista entre vertice ' . $txt_ari_o . ' y vertice ' . $txt_ari_d;
                             messageDialog($create);
                             $create = null;
-
                         }
                     } else {
                         phpAlert("Debe digitar vertice de origen y destino no pueden ser nulo");
@@ -223,7 +239,7 @@ function deleteDialog($msg){
                         if ($d === null || $d === "") {
                             echo '<p>No se encontro vertice</p>';
                         } else {
-                            echo "Se encontro el vertice ".$d->getId();
+                            echo "Se encontro el vertice " . $d->getId();
                         }
                     } else {
                         phpAlert("El id del vertice a ver no puede ser nulo");
@@ -235,9 +251,9 @@ function deleteDialog($msg){
                         if ($d === null || $d === "") {
                             echo '<p>No se encontro adyacencia</p>';
                         } else {
-                            echo "Vertices adyacentes de ".$txt_id_ady."<br>";
+                            echo "Vertices adyacentes de " . $txt_id_ady . "<br>";
                             foreach ($d as $arr => $value) {
-                               echo "Vertice ".$arr." <br>";
+                                echo "Vertice " . $arr . " <br>";
                             }
                         }
                     } else {
@@ -259,7 +275,7 @@ function deleteDialog($msg){
                     $txt_delver = $_POST["txt-delete-vert"];
                     if ($txt_delver != "") {
                         $_SESSION["grafo"]->eliminarVertice($txt_delver);
-                        deleteDialog("Se elimino el vertice ".$txt_delver);
+                        deleteDialog("Se elimino el vertice " . $txt_delver);
                     } else {
                         phpAlert("Debe indicar el id de un vertice");
                     }
@@ -268,16 +284,37 @@ function deleteDialog($msg){
                     $txt_del_d = $_POST["txt-delete-destino"];
                     if ($txt_del_o != "" && $txt_del_d != "") {
                         $_SESSION["grafo"]->eliminarArista($txt_del_o, $txt_del_d);
-                        deleteDialog("Se elimino la arista que va de ".$txt_del_o." a ".$txt_del_d);
-
+                        deleteDialog("Se elimino la arista que va de " . $txt_del_o . " a " . $txt_del_d);
                     } else {
                         phpAlert("Debe digitar vertice origen y destino");
                     }
                 } elseif (isset($_POST["ver-grafo"])) {
-                   ver_grafos();
+                    ver_grafos();
+                } elseif (isset($_POST["recorrido-inch"])) {
+                    if (($_POST["txt-runway-inch"] != "")) {
+                        $node_search = $_POST["txt-runway-inch"];
+
+                        $msgr = $_SESSION["grafo"]->recorrerAnchura($node_search);
+                        $str = "Recorrido por anchura : ";
+                        foreach ($msgr as $k => $val) {
+                            $str = $str . "->" . $val;
+                        }
+
+                        echo $str;
+                    }
+                } elseif (isset($_POST["recorrido-prof"])) {
+                    if (($_POST["txt-runway-prof"] != "")) {
+                        $node_searchw = $_POST["txt-runway-prof"];
+                        $msgrw = $_SESSION["grafo"]->RecorrerProfundidad($node_searchw);
+                       // $strw = "Recorrido por profundidad : ";
+                        
+                        //echo "Recorrido por profundidad: ".$node_searchw;
+                        print_r($msgrw);
+                    }
                 }
 
-                function ver_grafos(){
+                function ver_grafos()
+                {
                     $string_generate_aristas = null;
                     $mA = $_SESSION["grafo"]->getMatrizA();
                     foreach ($mA as $a => $adya) {
@@ -287,7 +324,7 @@ function deleteDialog($msg){
                             }
                         }
                     }
-                
+
                     echo "<br>";
                     $mV = $_SESSION["grafo"]->getVectorV();
                     $string_generate_nodes = null;
@@ -303,7 +340,7 @@ function deleteDialog($msg){
                             $string_generate_nodes = $string_generate_nodes . "{id: '$str', label: '$str',color:{background:'$add_color'} },";
                         }
                     }
-                
+
                     //echo "<h5>Nodos: </h5>".$string_generate_nodes."<br>";
                     $split_string_generate_arista = substr($string_generate_aristas, 0, -1);
                     //echo "<h5>Aristas: </h5>".$split_string_generate_arista."<br>";
@@ -312,14 +349,13 @@ function deleteDialog($msg){
                     <div id="content-grafo" style="width:90%;height:400px;">    
                     </div></div></div>';
                     generateGrafo($string_generate_nodes, $split_string_generate_arista);
-                
                 }
 
-                
-    $yen = $_SESSION["grafo"]->getVectorV();
-    if ( count($yen) > 1) {
-            ver_grafos();
-    }
+
+                $yen = $_SESSION["grafo"]->getVectorV();
+                if (count($yen) > 1) {
+                    ver_grafos();
+                }
 
                 ?>
             </div>
