@@ -85,7 +85,7 @@ function deleteDialog($msg)
             <div class="col-6">
                 <div class="row">
                     <div class="col-12">
-                        <h1>Proyecto grafos</h1>
+                        <h1>Proyecto Arboles Binarios</h1>
                         <h5>Integrantes: Benjamin E. Nieto Garcia, Juan R. Jimenez Y.</h5>
                         <div class="row">
                             <div class="col-12">
